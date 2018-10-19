@@ -1,5 +1,8 @@
 import pandas as pd
 from collections import Counter
+import collections
+import numpy as np
+
 
 def read_data(fname):
     data = pd.read_csv(fname,
@@ -19,37 +22,43 @@ def filter_nan(data):
             df = df.append(row)
     return df
 
+def int2onehot(list_len, index):
+    one_hot = np.zeros((1, list_len))
+    one_hot[np.arange(1), index] = 1
 
+    return list(one_hot[0])
 
-def class2int(data):
+def flatten(x):
+    if isinstance(x, collections.Iterable):
+        return [a for i in x for a in flatten(i)]
+    else:
+        return [x]
+
+def class2vect(data):
     new_data = []
     for index, row in data.iterrows():
         col_list = []
         if(not any(row.isnull())):
             col_list.append(row["Age"])
-            col_list.append(WORK_DICT.index(row["Workclass"]))
+            col_list.append(int2onehot(len(WORK_DICT), WORK_DICT.index(row["Workclass"])))
             col_list.append(row["fnlwgt"])
-            col_list.append(EDU_DICT.index(row["Education"]))
+            col_list.append(int2onehot(len(EDU_DICT), EDU_DICT.index(row["Education"])))
             col_list.append(row["Education-Num"])
-            col_list.append(MARITAL_DICT.index(row["Marital Status"]))
-            col_list.append(OCCUP_DICT.index(row["Occupation"]))
-            col_list.append(RELATIONSHIP_DICT.index(row["Relationship"]))
-            col_list.append(RACE_DICT.index(row["Race"]))
+            col_list.append(int2onehot(len(MARITAL_DICT), MARITAL_DICT.index(row["Marital Status"])))
+            col_list.append(int2onehot(len(OCCUP_DICT), OCCUP_DICT.index(row["Occupation"])))
+            col_list.append(int2onehot(len(RELATIONSHIP_DICT), RELATIONSHIP_DICT.index(row["Relationship"])))
+            col_list.append(int2onehot(len(RACE_DICT), RACE_DICT.index(row["Race"])))
             col_list.append(row["Capital Gain"])
             col_list.append(row["Capital Loss"])
             col_list.append(row["Hours per week"])
-            col_list.append(COUNTRY_DICT.index(row["Country"]))
-            print(col_list)
-            target = TARGET_DICT.index(row["Target"])
-            print(target)
-            input()
+            col_list.append(int2onehot(len(COUNTRY_DICT), COUNTRY_DICT.index(row["Country"])))
+            col_list = flatten(col_list)
+            target = int2onehot(len(TARGET_DICT), TARGET_DICT.index(row["Target"]))
+            new_data.append(col_list)
+    print(np.array(new_data).shape)
+
     return new_data
 
-#pprint(data)
-
-#print(data["Workclass"])
-
-#print(data.isnull())
 
 #print("WORKCLASS", Counter(list(data["Workclass"])))
 #print("EDUCATION", Counter(list(data["Education"])))
@@ -78,4 +87,4 @@ if __name__ == "__main__":
 
     #for col in data:
     #    print(get_unique_elems(data[col]))
-    new_data = class2int(data)
+    new_data = class2vect(data)
