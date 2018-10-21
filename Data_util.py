@@ -2,6 +2,7 @@ import pandas as pd
 from collections import Counter
 import collections
 import numpy as np
+import tensorflow as tf
 
 
 def read_data(fname):
@@ -36,6 +37,7 @@ def flatten(x):
 
 def class2vect(data):
     new_data = []
+    targets = []
     for index, row in data.iterrows():
         col_list = []
         if(not any(row.isnull())):
@@ -53,11 +55,13 @@ def class2vect(data):
             col_list.append(row["Hours per week"])
             col_list.append(int2onehot(len(COUNTRY_DICT), COUNTRY_DICT.index(row["Country"])))
             col_list = flatten(col_list)
-            target = int2onehot(len(TARGET_DICT), TARGET_DICT.index(row["Target"]))
             new_data.append(col_list)
-    print(np.array(new_data).shape)
 
-    return new_data
+            targets.append(int2onehot(len(TARGET_DICT), TARGET_DICT.index(row["Target"])))
+    return new_data, targets
+
+def get_unique_elems(col):
+    return set(col)
 
 
 #print("WORKCLASS", Counter(list(data["Workclass"])))
@@ -74,17 +78,3 @@ RACE_DICT = ['Other', None, 'White', 'Amer-Indian-Eskimo', 'Black', 'Asian-Pac-I
 SEX_DICT = ['Male', 'Female', None]
 COUNTRY_DICT = ['Germany', 'Columbia', 'Taiwan', 'Thailand', 'United-States', 'India', 'Greece', 'Ireland', 'Iran', 'Portugal', 'Laos', 'Philippines', 'Puerto-Rico', 'Guatemala', 'Yugoslavia', 'England', 'Poland', 'Canada', 'Jamaica', 'Italy', 'Japan', 'China', 'Outlying-US(Guam-USVI-etc)', 'France', 'Mexico', 'Dominican-Republic', 'South', 'Haiti', 'Trinadad&Tobago', 'El-Salvador', 'Honduras', 'Vietnam', 'Nicaragua', None, 'Ecuador', 'Peru', 'Cambodia', 'Scotland', 'Cuba', 'Hong']
 TARGET_DICT = ['>50K', '<=50K']
-
-
-def get_unique_elems(col):
-    return set(col)
-
-
-
-if __name__ == "__main__":
-    data = read_data("data/adult.data")
-    #filter_nan(data)
-
-    #for col in data:
-    #    print(get_unique_elems(data[col]))
-    new_data = class2vect(data)
