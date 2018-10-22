@@ -42,21 +42,28 @@ def class2vect(data):
         if(not any(row.isnull())):
             col_list.append(row["Age"])
             col_list.append(int2onehot(len(WORK_DICT), WORK_DICT.index(row["Workclass"])))
+            #col_list.append(WORK_DICT.index(row["Workclass"]))
             col_list.append(row["fnlwgt"])
             col_list.append(int2onehot(len(EDU_DICT), EDU_DICT.index(row["Education"])))
+            #col_list.append(EDU_DICT.index(row["Education"]))
             col_list.append(row["Education-Num"])
             col_list.append(int2onehot(len(MARITAL_DICT), MARITAL_DICT.index(row["Marital Status"])))
             col_list.append(int2onehot(len(OCCUP_DICT), OCCUP_DICT.index(row["Occupation"])))
             col_list.append(int2onehot(len(RELATIONSHIP_DICT), RELATIONSHIP_DICT.index(row["Relationship"])))
             col_list.append(int2onehot(len(RACE_DICT), RACE_DICT.index(row["Race"])))
+            #col_list.append(MARITAL_DICT.index(row["Marital Status"]))
+            #col_list.append(OCCUP_DICT.index(row["Occupation"]))
+            #col_list.append(RELATIONSHIP_DICT.index(row["Relationship"]))
+            #col_list.append(RACE_DICT.index(row["Race"]))
             col_list.append(row["Capital Gain"])
             col_list.append(row["Capital Loss"])
             col_list.append(row["Hours per week"])
             col_list.append(int2onehot(len(COUNTRY_DICT), COUNTRY_DICT.index(row["Country"])))
+            #col_list.append(COUNTRY_DICT.index(row["Country"]))
             col_list = flatten(col_list)
             new_data.append(col_list)
 
-            targets.append(int2onehot(len(TARGET_DICT), TARGET_DICT.index(row["Target"])))
+            targets.append(TARGET_DICT.index(row["Target"]))
     return new_data, targets
 
 def get_unique_elems(col):

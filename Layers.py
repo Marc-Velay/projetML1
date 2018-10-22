@@ -77,7 +77,8 @@ def dense(tensor, outDim, name):
 		Binit = tf.Variable(tf.truncated_normal([outDim],mean=0, stddev=1 / np.sqrt(inDim)), name='bias1')
 		B = tf.Variable(Binit)
 		variable_summaries(B, name + '/B')
-		tensor = tf.nn.tanh((tf.matmul(tensor, W)+B), name='activationLayer1')
+		tensor = tf.matmul(tensor, W)+B
+		tensor = tf.nn.tanh(tensor, name='activationLayer1')
 	return tensor
 
 
