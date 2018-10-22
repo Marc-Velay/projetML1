@@ -63,7 +63,7 @@ def class2vect(data):
             col_list = flatten(col_list)
             new_data.append(col_list)
 
-            targets.append(TARGET_DICT.index(row["Target"]))
+            targets.append(int2onehot(len(TARGET_DICT),TARGET_DICT.index(row["Target"])))
     return new_data, targets
 
 def get_unique_elems(col):
