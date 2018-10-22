@@ -13,7 +13,6 @@ def read_data(fname):
                         sep=r'\s*,\s*',
                         engine='python',
                         na_values="?")
-
     return data
 
 def filter_nan(data):
@@ -69,12 +68,12 @@ def get_unique_elems(col):
 #print("EDU-NUM", Counter(list(data["Education-Num"])))
 #print("MARITAL STATUS", Counter(list(data["Martial Status"])))
 
-WORK_DICT = ['Self-emp-not-inc', 'Local-gov', 'Federal-gov', 'Without-pay', 'State-gov', 'Private', 'Self-emp-inc']
-EDU_DICT = ['7th-8th', 'Assoc-acdm', '9th', 'Some-college', 'Bachelors', '5th-6th', '1st-4th', 'HS-grad', 'Assoc-voc', 'Doctorate', 'Preschool', '12th', 'Masters', 'Prof-school', '10th', '11th']
+WORK_DICT = ['Federal-gov', 'Self-emp-inc', 'State-gov', 'Local-gov', 'Without-pay', 'Private', 'Self-emp-not-inc', 'Never-worked']
+EDU_DICT = ['HS-grad', '1st-4th', 'Preschool', 'Assoc-acdm', 'Prof-school', '5th-6th', 'Bachelors', 'Assoc-voc', '10th', '7th-8th', '11th', 'Some-college', 'Masters', '9th', 'Doctorate', '12th']
 MARITAL_DICT = ['Separated', 'Divorced', 'Never-married', 'Married-spouse-absent', 'Married-civ-spouse', 'M', 'Widowed', 'Married-AF-spouse']
 OCCUP_DICT = ['Other-service', 'Transport-moving', 'Adm-clerical', 'Machine-op-inspct', 'Armed-Forces', 'Exec-managerial', 'Farming-fishing', 'Sales', 'Protective-serv', 'Priv-house-serv', 'Tech-support', None, 'Handlers-cleaners', 'Prof-specialty', 'Craft-repair']
 RELATIONSHIP_DICT = ['Unmarried', 'Not-in-family', 'Wife', 'Own-child', 'Other-relative', None, 'Husband']
 RACE_DICT = ['Other', None, 'White', 'Amer-Indian-Eskimo', 'Black', 'Asian-Pac-Islander']
 SEX_DICT = ['Male', 'Female', None]
-COUNTRY_DICT = ['Germany', 'Columbia', 'Taiwan', 'Thailand', 'United-States', 'India', 'Greece', 'Ireland', 'Iran', 'Portugal', 'Laos', 'Philippines', 'Puerto-Rico', 'Guatemala', 'Yugoslavia', 'England', 'Poland', 'Canada', 'Jamaica', 'Italy', 'Japan', 'China', 'Outlying-US(Guam-USVI-etc)', 'France', 'Mexico', 'Dominican-Republic', 'South', 'Haiti', 'Trinadad&Tobago', 'El-Salvador', 'Honduras', 'Vietnam', 'Nicaragua', None, 'Ecuador', 'Peru', 'Cambodia', 'Scotland', 'Cuba', 'Hong']
+COUNTRY_DICT = ['Greece', 'Cambodia', 'Poland', 'Mexico', 'France', 'Cuba', 'Outlying-US(Guam-USVI-etc)', 'Thailand', 'Germany', 'Ecuador', 'Guatemala', 'Philippines', 'Honduras', 'Japan', 'Vietnam', 'Holand-Netherlands', 'Hungary', 'Nicaragua', 'Scotland', 'England', 'South', 'Puerto-Rico', 'United-States', 'Jamaica', 'Iran', 'Laos', 'Peru', 'Canada', 'Italy', 'Portugal', 'Taiwan', 'Haiti', 'Trinadad&Tobago', 'El-Salvador', 'Ireland', 'China', 'Yugoslavia', 'Hong', 'Dominican-Republic', 'Columbia', 'India']
 TARGET_DICT = ['>50K', '<=50K']

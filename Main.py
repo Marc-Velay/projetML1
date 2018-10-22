@@ -21,10 +21,13 @@ with tf.name_scope('input'):
 
 
 with tf.name_scope('MLP'):
-	t = Layers.dense(X,480,'layer_1')
-	t = Layers.dense(t,300,'layer_2')
-	t = Layers.dense(t,200,'layer_3')
-	t = Layers.dense(t,100,'layer_4')
+	t = Layers.dense(X,1024,'layer_1')
+	t = Layers.dense(t,512,'layer_2a')
+	t = Layers.dense(t,256,'layer_2b')
+	t = Layers.dense(t,128,'layer_2c')
+	t = Layers.dense(t,100,'layer_2d')
+	t = Layers.dense(t,75,'layer_3')
+	t = Layers.dense(t,60,'layer_4')
 	t = Layers.dense(t,50,'layer_5')
 	t = Layers.dense(t,25,'layer_6')
 	y = Layers.fc(t,2,'fc',tf.nn.tanh)
@@ -44,7 +47,7 @@ with tf.name_scope('accuracy'):
 
 with tf.name_scope('learning_rate'):
 	global_step = tf.Variable(0, trainable=False)
-	learning_rate = tf.train.exponential_decay(0.0001,global_step,1000, 0.75, staircase=True)
+	learning_rate = tf.train.exponential_decay(0.01,global_step,1000, 0.75, staircase=True)
 
 
 with tf.name_scope('learning_rate'):
@@ -82,16 +85,10 @@ for it in range(nbIt):
 		x_batch=X_train[start:end]
 		y_batch=y_train[start:end]
 		sess.run(train_step, feed_dict={X:x_batch , Y:y_batch})
-		'''if i%100 == 0:
-			acc,ce = sess.run([accuracy,cross_entropy], feed_dict={X:x_batch , Y:y_batch})
-			print ("it= %6d - cross_entropy= %.4f - acc= %.4f" % (it,ce,acc ))
-			summary_merged = sess.run(merged, feed_dict={X:x_batch , Y:y_batch})
-			writer.add_summary(summary_merged, it)
-		'''
 	if it%10 == 0:
 		Acc_Train_value = sess.run([accuracy], feed_dict={X: X_train, Y: y_train })[0]#,keep_prob:1.0})
 		Acc_Test_value = sess.run([accuracy], feed_dict={X: X_test, Y: y_test })[0]#,keep_prob:1.0})
-		print ("it: %d, mean accuracy train = %.4f  test = %.4f" % (it,Acc_Train_value,Acc_Test_value ))
+		print ("epoch: %d, mean accuracy train = %.4f  test = %.4f" % (it,Acc_Train_value,Acc_Test_value ))
 		summary_acc = sess.run(MeanAcc_summary, feed_dict={Acc_Train:Acc_Train_value,Acc_Test:Acc_Test_value})
 		writer.add_summary(summary_acc, it)
 

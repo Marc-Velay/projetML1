@@ -66,7 +66,7 @@ def unflat(tensor, outDimH,outDimW,outDimD):
 	return tensor
 
 
-def dense(tensor, outDim, name, act=tf.nn.relu):
+def dense(tensor, outDim, name):
 	with tf.name_scope(name):
 		inDim = tensor.get_shape()[1].value
 		Winit = tf.Variable(tf.truncated_normal([inDim, outDim], mean=0, stddev=1 / np.sqrt(inDim)), name='weights1')
