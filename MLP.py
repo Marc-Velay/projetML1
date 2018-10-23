@@ -5,6 +5,7 @@ import Data_util
 from sklearn import model_selection
 
 experiment_name = 'salary'
+LoadModel = False
 
 data = Data_util.read_data("data/adult.data")
 data = Data_util.normalise_data_pandas(data, ["Age", "fnlwgt", "Education-Num", "Capital Gain", "Capital Loss", "Hours per week"])
@@ -79,7 +80,7 @@ saver = tf.train.Saver()
 #if LoadModel:
 	#saver.restore(sess, "./save/model.ckpt")
 
-nbIt = 5000
+nbIt = 200
 batchsize = 100
 for it in range(nbIt):
     for i in range(0,len(X_train), batchsize):
