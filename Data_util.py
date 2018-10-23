@@ -83,4 +83,4 @@ RELATIONSHIP_DICT = ['Unmarried', 'Not-in-family', 'Wife', 'Own-child', 'Other-r
 RACE_DICT = ['Other', None, 'White', 'Amer-Indian-Eskimo', 'Black', 'Asian-Pac-Islander']
 SEX_DICT = ['Male', 'Female', None]
 COUNTRY_DICT = ['Greece', 'Cambodia', 'Poland', 'Mexico', 'France', 'Cuba', 'Outlying-US(Guam-USVI-etc)', 'Thailand', 'Germany', 'Ecuador', 'Guatemala', 'Philippines', 'Honduras', 'Japan', 'Vietnam', 'Holand-Netherlands', 'Hungary', 'Nicaragua', 'Scotland', 'England', 'South', 'Puerto-Rico', 'United-States', 'Jamaica', 'Iran', 'Laos', 'Peru', 'Canada', 'Italy', 'Portugal', 'Taiwan', 'Haiti', 'Trinadad&Tobago', 'El-Salvador', 'Ireland', 'China', 'Yugoslavia', 'Hong', 'Dominican-Republic', 'Columbia', 'India']
-TARGET_DICT = ['>50K', '<=50K']
+TARGET_DICT = ['<=50K', '>50K']

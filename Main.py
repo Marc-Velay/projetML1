@@ -21,7 +21,9 @@ with tf.name_scope('input'):
 
 
 with tf.name_scope('MLP'):
-    t = Layers.dense(X,2048,'layer_1')
+    t = Layers.dense(X,5128,'layer_1')
+    t = Layers.dense(t,4096,'layer_1c')
+    t = Layers.dense(t,2048,'layer_1b')
     t = Layers.dense(t,1024,'layer_1a')
     t = Layers.dense(t,512,'layer_2a')
     t = Layers.dense(t,128,'layer_2b')
@@ -30,7 +32,7 @@ with tf.name_scope('MLP'):
 
 with tf.name_scope('cross_entropy'):
     #diff = Y * y
-    classes_weights = tf.constant([1., 0.752])
+    classes_weights = tf.constant([1., 0.652])
     with tf.name_scope('total'):
         #cross_entropy = -tf.reduce_mean(diff)
         cross_entropy = tf.nn.weighted_cross_entropy_with_logits(targets=Y, logits=y, pos_weight=classes_weights)
