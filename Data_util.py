@@ -34,6 +34,15 @@ def flatten(x):
     else:
         return [x]
 
+
+def remap(x, in_min, in_max, out_min, out_max):
+  return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min
+
+def normalise_data(X, row_names):
+    for rname in row_names:
+        X[rname] = remap(X[rname], X[rname].min(), X[rname].max(), 0, 1)
+    return X
+
 def class2vect(data):
     new_data = []
     targets = []
