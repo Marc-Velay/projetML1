@@ -2,20 +2,19 @@ import tensorflow as tf
 import numpy as np
 import Layers
 import Data_util
+from sklearn import model_selection
 
 experiment_name = 'salary'
 
 data = Data_util.read_data("data/adult.data")
-data = Data_util.normalise_data(data, ["Age", "fnlwgt", "Education-Num", "Capital Gain", "Capital Loss", "Hours per week"])
+data = Data_util.normalise_data_pandas(data, ["Age", "fnlwgt", "Education-Num", "Capital Gain", "Capital Loss", "Hours per week"])
 training_data, training_labels = Data_util.class2vect(data)
+#training_data = Data_util.normalise_data_np(np.array(training_data))
+#split_ratio = 0.8
+#X_train, X_test = training_data[:int(len(training_data)*split_ratio)], training_data[int(len(training_data)*split_ratio):]
+#y_train, y_test = training_labels[:int(len(training_labels)*split_ratio)], training_labels[int(len(training_labels)*split_ratio):]
 
-split_ratio = 0.8
-X_train, X_test = training_data[:int(len(training_data)*split_ratio)], training_data[int(len(training_data)*split_ratio):]
-y_train, y_test = training_labels[:int(len(training_labels)*split_ratio)], training_labels[int(len(training_labels)*split_ratio):]
-
-
-print(X_train[:2])
-input()
+X_train, X_test, y_train, y_test = model_selection.train_test_split(training_data, training_labels, train_size=0.7, test_size=0.3)
 
 
 with tf.name_scope('input'):

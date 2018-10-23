@@ -38,10 +38,17 @@ def flatten(x):
 def remap(x, in_min, in_max, out_min, out_max):
   return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min
 
-def normalise_data(X, row_names):
+def normalise_data_pandas(X, row_names):
     for rname in row_names:
         X[rname] = remap(X[rname], X[rname].min(), X[rname].max(), 0, 1)
     return X
+
+def normalise_data_np(X):
+    new_data = []
+    for rname in range(len(X[0])):
+        new_data.append(remap(X[:,rname], min(X[:,rname]), max(X[:,rname]), 0, 1))
+    return list(map(list, zip(*new_data)))
+
 
 def class2vect(data):
     new_data = []
