@@ -80,7 +80,7 @@ def class2vect(data):
             new_data.append(col_list)
 
             targets.append(int2onehot(len(TARGET_DICT),TARGET_DICT.index(row["Target"])))
-    return new_data, targets
+    return np.array(new_data), np.array(targets)
 
 def get_unique_elems(col):
     return set(col)
