@@ -3,6 +3,8 @@ import numpy as np
 import Layers
 import Data_util
 from sklearn import model_selection
+import prince
+
 
 experiment_name = 'salary'
 LoadModel = False
@@ -16,7 +18,20 @@ training_data, training_labels = Data_util.class2vect(data)
 #y_train, y_test = training_labels[:int(len(training_labels)*split_ratio)], training_labels[int(len(training_labels)*split_ratio):]
 
 X_train, X_test, y_train, y_test = model_selection.train_test_split(training_data, training_labels, train_size=0.7, test_size=0.3)
+'''
+pca = prince.PCA(   n_components=90,
+                    n_iter=3,
+                    copy=True,
+                    rescale_with_mean=True,
+                    rescale_with_std=True,
+                    engine='auto',
+                    random_state=42)
 
+pca = pca.fit(X_train)
+
+X_train = np.array(pca.row_coordinates(X_train))
+X_test = np.array(pca.row_coordinates(X_test))
+'''
 
 with tf.name_scope('input'):
     X = tf.placeholder(tf.float32, [None, len(X_train[0])], name='features')
@@ -24,9 +39,9 @@ with tf.name_scope('input'):
 
 
 with tf.name_scope('MLP'):
-    t = Layers.dense(X,5128,'layer_1')
-    t = Layers.dense(t,4096,'layer_1c')
-    t = Layers.dense(t,2048,'layer_1b')
+    t = Layers.dense(X,2500,'layer_1')
+    #t = Layers.dense(t,4096,'layer_1c')
+    #t = Layers.dense(t,2048,'layer_1b')
     t = Layers.dense(t,1024,'layer_1a')
     t = Layers.dense(t,512,'layer_2a')
     t = Layers.dense(t,128,'layer_2b')
