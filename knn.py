@@ -23,7 +23,7 @@ X_train, X_test = training_data[:int(len(training_data)*split_ratio)], training_
 y_train, y_test = training_labels[:int(len(training_labels)*split_ratio)], training_labels[int(len(training_labels)*split_ratio):]
 
 k_List = list(range(1,50))
-neighbors = filter(lambda x: x % 2 != 0, k_List)
+neighbors = list(filter(lambda x: x % 2 != 0, k_List))
 cv_scores = []
 
 for k in neighbors:
