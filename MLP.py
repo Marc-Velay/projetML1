@@ -96,7 +96,7 @@ saver = tf.train.Saver()
 	#saver.restore(sess, "./save/model.ckpt")
 
 nbIt = 200
-batchsize = 100
+batchsize = 128
 for it in range(nbIt):
     for i in range(0,len(X_train), batchsize):
         start=i
