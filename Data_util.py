@@ -50,7 +50,7 @@ def normalise_data_np(X):
     return list(map(list, zip(*new_data)))
 
 
-def class2vect(data):
+def class2vect(data, one_hot=False):
     new_data = []
     targets = []
     for index, row in data.iterrows():
@@ -79,7 +79,10 @@ def class2vect(data):
             col_list = flatten(col_list)
             new_data.append(col_list)
 
-            targets.append(int2onehot(len(TARGET_DICT),TARGET_DICT.index(row["Target"])))
+            if one_hot is True:
+                targets.append(int2onehot(len(TARGET_DICT),TARGET_DICT.index(row["Target"])))
+            else:
+                targets.append(TARGET_DICT.index(row["Target"]))
     return np.array(new_data), np.array(targets)
 
 def get_unique_elems(col):

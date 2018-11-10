@@ -33,8 +33,8 @@ for k in neighbors:
 
 MSE = [1 - x for x in cv_scores]
 optimal_k = neighbors[MSE.index(min(MSE))]
-print "The optimal number of neighbors is %d" % optimal_k
-print "With a mean square error of : ", min(MSE)
+print("The optimal number of neighbors is %d" % optimal_k)
+print("With a mean square error of : ", min(MSE))
 plt.plot(neighbors, MSE)
 plt.xlabel('Number of Neighbors K')
 plt.ylabel('Misclassification Error')
