@@ -2,18 +2,36 @@ import tensorflow as tf
 import numpy as np
 import Layers
 import Data_util
+from sklearn import model_selection
+import prince
 
-LoadModel = False
 
 experiment_name = 'salary'
+LoadModel = False
 
 data = Data_util.read_data("data/adult.data")
+data = Data_util.normalise_data_pandas(data, ["Age", "fnlwgt", "Education-Num", "Capital Gain", "Capital Loss", "Hours per week"])
 training_data, training_labels = Data_util.class2vect(data)
+#training_data = Data_util.normalise_data_np(np.array(training_data))
+#split_ratio = 0.8
+#X_train, X_test = training_data[:int(len(training_data)*split_ratio)], training_data[int(len(training_data)*split_ratio):]
+#y_train, y_test = training_labels[:int(len(training_labels)*split_ratio)], training_labels[int(len(training_labels)*split_ratio):]
 
-split_ratio = 0.8
-X_train, X_test = training_data[:int(len(training_data)*split_ratio)], training_data[int(len(training_data)*split_ratio):]
-y_train, y_test = training_labels[:int(len(training_labels)*split_ratio)], training_labels[int(len(training_labels)*split_ratio):]
+X_train, X_test, y_train, y_test = model_selection.train_test_split(training_data, training_labels, train_size=0.7, test_size=0.3)
+'''
+pca = prince.PCA(   n_components=90,
+                    n_iter=3,
+                    copy=True,
+                    rescale_with_mean=True,
+                    rescale_with_std=True,
+                    engine='auto',
+                    random_state=42)
 
+pca = pca.fit(X_train)
+
+X_train = np.array(pca.row_coordinates(X_train))
+X_test = np.array(pca.row_coordinates(X_test))
+'''
 
 with tf.name_scope('input'):
     X = tf.placeholder(tf.float32, [None, len(X_train[0])], name='features')
@@ -21,7 +39,9 @@ with tf.name_scope('input'):
 
 
 with tf.name_scope('MLP'):
-    t = Layers.dense(X,2048,'layer_1')
+    t = Layers.dense(X,2500,'layer_1')
+    #t = Layers.dense(t,4096,'layer_1c')
+    #t = Layers.dense(t,2048,'layer_1b')
     t = Layers.dense(t,1024,'layer_1a')
     t = Layers.dense(t,512,'layer_2a')
     t = Layers.dense(t,128,'layer_2b')
@@ -30,7 +50,7 @@ with tf.name_scope('MLP'):
 
 with tf.name_scope('cross_entropy'):
     #diff = Y * y
-    classes_weights = tf.constant([1., 0.752])
+    classes_weights = tf.constant([1., 0.652])
     with tf.name_scope('total'):
         #cross_entropy = -tf.reduce_mean(diff)
         cross_entropy = tf.nn.weighted_cross_entropy_with_logits(targets=Y, logits=y, pos_weight=classes_weights)
@@ -75,7 +95,7 @@ saver = tf.train.Saver()
 #if LoadModel:
 	#saver.restore(sess, "./save/model.ckpt")
 
-nbIt = 5000
+nbIt = 200
 batchsize = 100
 for it in range(nbIt):
     for i in range(0,len(X_train), batchsize):

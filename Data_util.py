@@ -34,6 +34,22 @@ def flatten(x):
     else:
         return [x]
 
+
+def remap(x, in_min, in_max, out_min, out_max):
+  return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min
+
+def normalise_data_pandas(X, row_names):
+    for rname in row_names:
+        X[rname] = remap(X[rname], X[rname].min(), X[rname].max(), 0, 1)
+    return X
+
+def normalise_data_np(X):
+    new_data = []
+    for rname in range(len(X[0])):
+        new_data.append(remap(X[:,rname], min(X[:,rname]), max(X[:,rname]), 0, 1))
+    return list(map(list, zip(*new_data)))
+
+
 def class2vect(data):
     new_data = []
     targets = []
@@ -64,7 +80,7 @@ def class2vect(data):
             new_data.append(col_list)
 
             targets.append(int2onehot(len(TARGET_DICT),TARGET_DICT.index(row["Target"])))
-    return new_data, targets
+    return np.array(new_data), np.array(targets)
 
 def get_unique_elems(col):
     return set(col)
@@ -83,4 +99,4 @@ RELATIONSHIP_DICT = ['Unmarried', 'Not-in-family', 'Wife', 'Own-child', 'Other-r
 RACE_DICT = ['Other', None, 'White', 'Amer-Indian-Eskimo', 'Black', 'Asian-Pac-Islander']
 SEX_DICT = ['Male', 'Female', None]
 COUNTRY_DICT = ['Greece', 'Cambodia', 'Poland', 'Mexico', 'France', 'Cuba', 'Outlying-US(Guam-USVI-etc)', 'Thailand', 'Germany', 'Ecuador', 'Guatemala', 'Philippines', 'Honduras', 'Japan', 'Vietnam', 'Holand-Netherlands', 'Hungary', 'Nicaragua', 'Scotland', 'England', 'South', 'Puerto-Rico', 'United-States', 'Jamaica', 'Iran', 'Laos', 'Peru', 'Canada', 'Italy', 'Portugal', 'Taiwan', 'Haiti', 'Trinadad&Tobago', 'El-Salvador', 'Ireland', 'China', 'Yugoslavia', 'Hong', 'Dominican-Republic', 'Columbia', 'India']
-TARGET_DICT = ['>50K', '<=50K']
+TARGET_DICT = ['<=50K', '>50K']
