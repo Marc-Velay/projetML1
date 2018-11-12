@@ -3,6 +3,7 @@ from collections import Counter
 import collections
 import numpy as np
 import tensorflow as tf
+from random import randrange
 
 
 def read_data(fname):
@@ -88,6 +89,13 @@ def class2vect(data, one_hot=False):
 def get_unique_elems(col):
     return set(col)
 
+def subsample(dataset, ratio=1.0):
+	sample = list()
+	n_sample = round(len(dataset) * ratio)
+	while len(sample) < n_sample:
+		index = randrange(len(dataset))
+		sample.append(dataset[index])
+	return sample
 
 #print("WORKCLASS", Counter(list(data["Workclass"])))
 #print("EDUCATION", Counter(list(data["Education"])))
