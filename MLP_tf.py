@@ -8,15 +8,31 @@ import prince
 
 experiment_name = 'salary'
 LoadModel = False
+LoadData = True
+DataFile = 'data/saved_data.pkl'
+LabelFile = 'data/saved_labels.pkl'
 
-data = Data_util.read_data("data/adult.data")
-data = Data_util.normalise_data_pandas(data, ["Age", "fnlwgt", "Education-Num", "Capital Gain", "Capital Loss", "Hours per week"])
-training_data, training_labels = Data_util.class2vect(data, one_hot=True)
+if LoadData is False or not os.path.isfile(DataFile):
+    data = Data_util.read_data("data/adult.data")
+    data = Data_util.normalise_data_pandas(data, ["Age", "fnlwgt", "Education-Num", "Capital Gain", "Capital Loss", "Hours per week"])
+    training_data, training_labels = Data_util.class2vect(data, one_hot=True)
+    if not os.path.isfile(DataFile):
+        with open(DataFile, "wb") as f:
+            pickle.dump(training_data, f)
+    if not os.path.isfile(LabelFile):
+        with open(LabelFile, "wb") as f:
+            pickle.dump(training_labels, f)
+else:
+    if os.path.isfile(DataFile) and os.path.isfile(LabelFile):
+        with open(DataFile, "rb") as f:
+            training_data = pickle.load(f)
+        with open(LabelFile, "rb") as f:
+            training_labels = pickle.load(f)
+
 #training_data = Data_util.normalise_data_np(np.array(training_data))
 #split_ratio = 0.8
 #X_train, X_test = training_data[:int(len(training_data)*split_ratio)], training_data[int(len(training_data)*split_ratio):]
 #y_train, y_test = training_labels[:int(len(training_labels)*split_ratio)], training_labels[int(len(training_labels)*split_ratio):]
-
 X_train, X_test, y_train, y_test = model_selection.train_test_split(training_data, training_labels, train_size=0.7, test_size=0.3)
 '''
 pca = prince.PCA(   n_components=90,
@@ -41,7 +57,7 @@ with tf.name_scope('input'):
 with tf.name_scope('MLP'):
     t = Layers.dense(X,2500,'layer_1')
     #t = Layers.dense(t,4096,'layer_1c')
-    #t = Layers.dense(t,2048,'layer_1b')
+    t = Layers.dense(t,2048,'layer_1b')
     t = Layers.dense(t,1024,'layer_1a')
     t = Layers.dense(t,512,'layer_2a')
     t = Layers.dense(t,128,'layer_2b')
@@ -95,28 +111,25 @@ saver = tf.train.Saver()
 #if LoadModel:
 	#saver.restore(sess, "./save/model.ckpt")
 
-bagged_train = Data_util.subsample(list(X_train))
 nbIt = 200
 batchsize = 128
 for it in range(nbIt):
-    for i in range(0,len(bagged_train), batchsize):
+    for i in range(0,len(X_train), batchsize):
         start=i
         end=i+batchsize
-        x_batch=bagged_train[start:end]
+        x_batch=X_train[start:end]
         y_batch=y_train[start:end]
 
         sess.run(train_step, feed_dict={X:x_batch , Y:y_batch})
     if it%10 == 0:
-        Acc_Train_value = sess.run([accuracy], feed_dict={X: bagged_train, Y: y_train })[0]#,keep_prob:1.0})
+        Acc_Train_value = sess.run([accuracy], feed_dict={X: X_train, Y: y_train })[0]#,keep_prob:1.0})
         Acc_Test_value = sess.run([accuracy], feed_dict={X: X_test, Y: y_test })[0]#,keep_prob:1.0})
-        print ("iteration: %d, mean accuracy train = %.8f  test = %.8f" % (it,Acc_Train_value,Acc_Test_value ))
-        confusion_matrix = sess.run(conf_matrix, feed_dict={X: bagged_train, Y: y_train})
+        print ("epoch: %d, mean accuracy train = %.8f  test = %.8f" % (it,Acc_Train_value,Acc_Test_value ))
+        confusion_matrix = sess.run(conf_matrix, feed_dict={X: X_train, Y: y_train})
 
         print(confusion_matrix)
         summary_acc = sess.run(MeanAcc_summary, feed_dict={Acc_Train:Acc_Train_value,Acc_Test:Acc_Test_value})
         writer.add_summary(summary_acc, it)
-
-    bagged_train = Data_util.subsample(list(X_train))
 
 writer.close()
 if not LoadModel:

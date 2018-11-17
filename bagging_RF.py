@@ -1,3 +1,5 @@
+from sklearn.ensemble import BaggingClassifier
+
 import tensorflow as tf
 import numpy as np
 import Data_util
@@ -7,10 +9,9 @@ from sklearn import model_selection
 from sklearn.model_selection import GridSearchCV
 from sklearn.model_selection import StratifiedShuffleSplit
 import time
-import prince
+import os
+import pickle
 
-
-experiment_name = 'salary'
 
 LoadData = True
 DataFile = 'data/saved_data.pkl'
@@ -38,13 +39,18 @@ X_train, X_test, y_train, y_test = model_selection.train_test_split(training_dat
 
 
 print("training!")
-n_est_range = range(100, 1100, 500)
-max_depth_range = range(5, 25, 10)
+#n_est_range = range(100, 1100, 500)
+#max_depth_range = range(5, 25, 10)
+
+n_est_range=[100]
+max_depth_range=[25]
+
 param_grid = dict(n_estimators=n_est_range, max_depth=max_depth_range)
 cv = StratifiedShuffleSplit(n_splits=10, test_size=0.2, random_state=42)
-grid = GridSearchCV(RandomForestClassifier(), param_grid=param_grid, cv=cv, n_jobs=7, verbose=1)
-grid.fit(X_train, y_train)
+#grid = GridSearchCV(RandomForestClassifier(), param_grid=param_grid, cv=cv, n_jobs=7, verbose=1)
+#grid.fit(X_train, y_train)
+bagging = BaggingClassifier(RandomForestClassifier(), max_samples=0.5, max_features=0.5, n_jobs=7)
+bagging.fit(X_train, y_train[:,1])
 
-
-print("The best parameters are %s with a score of %0.2f"
-      % (grid.best_params_, grid.best_score_))
+#print("The best parameters are %s with a score of %0.2f"
+#      % (grid.best_params_, grid.best_score_))
