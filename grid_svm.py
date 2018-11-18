@@ -31,4 +31,4 @@ cv = StratifiedShuffleSplit(n_splits=5, test_size=0.2, random_state=0)
 grid = GridSearchCV(SVC(), param_grid=param_grid, cv=cv, verbose=1, n_jobs=6)
 grid.fit(X_train, y_train)
 
-print("The best parameters are %s with a score of %0.2f" % (grid.best_params_, grid.best_score_))
+print("The best parameters are %s with a score of %0.4f" % (grid.best_params_, grid.best_score_))
