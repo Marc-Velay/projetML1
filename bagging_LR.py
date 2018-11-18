@@ -4,6 +4,7 @@ import tensorflow as tf
 import numpy as np
 import Data_util
 from sklearn import metrics
+from sklearn.linear_model import LinearRegression
 from sklearn.ensemble import RandomForestClassifier
 from sklearn import model_selection
 from sklearn.model_selection import GridSearchCV
@@ -57,7 +58,9 @@ X_train, X_val, y_train, y_val = model_selection.train_test_split(training_data,
 
 print("training!")
 
-bagging = BaggingClassifier(RandomForestClassifier(n_estimators=600, max_depth=15), max_samples=0.5, max_features=0.5, n_jobs=7)
+bagging = BaggingClassifier(LinearRegression(), max_samples=0.5, max_features=1., n_jobs=7)
+
+#bagging = BaggingClassifier(RandomForestClassifier(n_estimators=200), max_samples=0.5, max_features=1., n_jobs=7)
 bagging.fit(X_train, y_train[:,1])
 
 print("Classifier has a score of %0.4f"

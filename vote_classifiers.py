@@ -1,4 +1,4 @@
-from sklearn.ensemble import BaggingClassifier
+from sklearn.ensemble import VotingClassifier, GradientBoostingClassifier, AdaBoostClassifier
 
 import tensorflow as tf
 import numpy as np
@@ -6,8 +6,7 @@ import Data_util
 from sklearn import metrics
 from sklearn.ensemble import RandomForestClassifier
 from sklearn import model_selection
-from sklearn.model_selection import GridSearchCV
-from sklearn.model_selection import StratifiedShuffleSplit
+from sklearn.svm import SVC
 import time
 import os
 import pickle
@@ -56,9 +55,19 @@ X_train, X_val, y_train, y_val = model_selection.train_test_split(training_data,
 
 
 print("training!")
+Classifiers = []
+Classifiers.append(('RF',RandomForestClassifier(n_estimators=600, max_depth=15)))
+Classifiers.append(('RF1',AdaBoostClassifier(RandomForestClassifier(n_estimators=400, max_depth=10))))
+Classifiers.append(('RF2',RandomForestClassifier(n_estimators=700, max_depth=20)))
+Classifiers.append(('RF3',AdaBoostClassifier(RandomForestClassifier(n_estimators=300, max_depth=5))))
+Classifiers.append(('GBC',GradientBoostingClassifier(n_estimators=250, loss='exponential', learning_rate=0.2)))
+Classifiers.append(('GBC1',GradientBoostingClassifier(n_estimators=100, loss='exponential', learning_rate=0.2)))
+Classifiers.append(('GBC2',AdaBoostClassifier(GradientBoostingClassifier(n_estimators=50, loss='exponential', learning_rate=0.2), algorithm='SAMME')))
+Classifiers.append(('SVC',AdaBoostClassifier(SVC(C=.6, gamma=.5))))
 
-bagging = BaggingClassifier(RandomForestClassifier(n_estimators=600, max_depth=15), max_samples=0.5, max_features=0.5, n_jobs=7)
-bagging.fit(X_train, y_train[:,1])
+
+comb = VotingClassifier(estimators=Classifiers, n_jobs=7)
+comb.fit(X_train, y_train[:,1])
 
 print("Classifier has a score of %0.4f"
-      % (bagging.score(test_data, test_labels[:,1])))
+      % (comb.score(test_data, test_labels[:,1])))

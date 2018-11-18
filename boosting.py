@@ -1,4 +1,4 @@
-from sklearn.ensemble import BaggingClassifier
+from sklearn.ensemble import GradientBoostingClassifier, AdaBoostClassifier
 
 import tensorflow as tf
 import numpy as np
@@ -56,9 +56,9 @@ X_train, X_val, y_train, y_val = model_selection.train_test_split(training_data,
 
 
 print("training!")
-
-bagging = BaggingClassifier(RandomForestClassifier(n_estimators=600, max_depth=15), max_samples=0.5, max_features=0.5, n_jobs=7)
-bagging.fit(X_train, y_train[:,1])
+#boosting = GradientBoostingClassifier(n_estimators=250, loss='exponential', learning_rate=0.2)
+boosting = AdaBoostClassifier(RandomForestClassifier(n_estimators=600, max_depth=15, n_jobs=7), n_estimators=25, learning_rate=.1)
+boosting.fit(X_train, y_train[:,1])
 
 print("Classifier has a score of %0.4f"
-      % (bagging.score(test_data, test_labels[:,1])))
+      % (boosting.score(test_data, test_labels[:,1])))
