@@ -1,5 +1,6 @@
-from sklearn.ensemble import VotingClassifier, GradientBoostingClassifier, AdaBoostClassifier
+from sklearn.ensemble import VotingClassifier, GradientBoostingClassifier, AdaBoostClassifier, BaggingClassifier
 
+from sklearn.neural_network import MLPClassifier
 import tensorflow as tf
 import numpy as np
 import Data_util
@@ -53,21 +54,27 @@ else:
 
 X_train, X_val, y_train, y_val = model_selection.train_test_split(training_data, training_labels, train_size=.99, test_size=.01)
 
+MLP = BaggingClassifier(MLPClassifier(hidden_layer_sizes=(256,128,128,64), max_iter=30, alpha=1e-4,
+                    solver='adam', verbose=10, tol=1e-4, random_state=1,
+                    learning_rate_init=.01), max_samples=0.5, max_features=0.8, n_jobs=7)
+MLP2 = BaggingClassifier(MLPClassifier(hidden_layer_sizes=(256,256,256,64), max_iter=30, alpha=1e-4,
+                    solver='adam', verbose=10, tol=1e-4, random_state=1,
+                    learning_rate_init=.01), max_samples=0.5, max_features=0.8, n_jobs=7)
 
 print("training!")
 Classifiers = []
 Classifiers.append(('RF',RandomForestClassifier(n_estimators=600, max_depth=15)))
+Classifiers.append(('MLP',MLP))
+Classifiers.append(('MLP2',MLP2))
 Classifiers.append(('RF1',AdaBoostClassifier(RandomForestClassifier(n_estimators=400, max_depth=10))))
-Classifiers.append(('RF2',RandomForestClassifier(n_estimators=700, max_depth=20)))
+Classifiers.append(('RF2',BaggingClassifier(RandomForestClassifier(n_estimators=600, max_depth=15), max_samples=0.5, max_features=0.5, n_jobs=7)))
 Classifiers.append(('RF3',AdaBoostClassifier(RandomForestClassifier(n_estimators=300, max_depth=5))))
 Classifiers.append(('GBC',GradientBoostingClassifier(n_estimators=250, loss='exponential', learning_rate=0.2)))
-Classifiers.append(('GBC1',GradientBoostingClassifier(n_estimators=100, loss='exponential', learning_rate=0.2)))
-Classifiers.append(('GBC2',AdaBoostClassifier(GradientBoostingClassifier(n_estimators=50, loss='exponential', learning_rate=0.2), algorithm='SAMME')))
-Classifiers.append(('SVC',AdaBoostClassifier(SVC(C=.6, gamma=.5))))
+Classifiers.append(('SVC',AdaBoostClassifier(SVC(C=10, gamma=1), algorithm='SAMME')))
 
 
 comb = VotingClassifier(estimators=Classifiers, n_jobs=7)
 comb.fit(X_train, y_train[:,1])
-
+print('predicting')
 print("Classifier has a score of %0.4f"
       % (comb.score(test_data, test_labels[:,1])))

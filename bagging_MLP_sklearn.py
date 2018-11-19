@@ -1,15 +1,12 @@
-from sklearn.ensemble import BaggingClassifier
-
-import tensorflow as tf
 import numpy as np
+import pandas as pd
 import Data_util
+import matplotlib.pyplot as plt
+import numpy as np
 from sklearn import metrics
-from sklearn.linear_model import LinearRegression
-from sklearn.ensemble import RandomForestClassifier
 from sklearn import model_selection
-from sklearn.model_selection import GridSearchCV
-from sklearn.model_selection import StratifiedShuffleSplit
-import time
+from sklearn.neural_network import MLPClassifier
+from sklearn.ensemble import BaggingClassifier
 import os
 import pickle
 
@@ -55,12 +52,10 @@ else:
 
 X_train, X_val, y_train, y_val = model_selection.train_test_split(training_data, training_labels, train_size=.99, test_size=.01)
 
+bagging = BaggingClassifier(MLPClassifier(hidden_layer_sizes=(256,256,128,64), max_iter=30, alpha=1e-4,
+                    solver='adam', verbose=10, tol=1e-4, random_state=1,
+                    learning_rate_init=.01), max_samples=0.5, max_features=0.5, n_jobs=7)
 
-print("training!")
-
-bagging = BaggingClassifier(LinearRegression(), max_samples=0.5, max_features=1., n_jobs=7)
-
-#bagging = BaggingClassifier(RandomForestClassifier(n_estimators=200), max_samples=0.5, max_features=1., n_jobs=7)
 bagging.fit(X_train, y_train[:,1])
 
 print("Classifier has a score of %0.4f"

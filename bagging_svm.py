@@ -1,20 +1,23 @@
-from sklearn.ensemble import GradientBoostingClassifier, AdaBoostClassifier
-from sklearn.neighbors import KNeighborsClassifier
-from sklearn.ensemble import BaggingClassifier
-from sklearn.svm import SVC
-
+from __future__ import print_function
 import tensorflow as tf
 import numpy as np
+import pandas as pd
 import Data_util
+import matplotlib.pyplot as plt
+import numpy as np
+from sklearn import linear_model
+from sklearn.svm import SVC
 from sklearn import metrics
-from sklearn.ensemble import RandomForestClassifier
 from sklearn import model_selection
-import time
+from sklearn.ensemble import BaggingClassifier
 import os
 import pickle
 
+LoadModel = False
 
 LoadData = True
+
+experiment_name = 'salary'
 DataFile = 'data/saved_data.pkl'
 LabelFile = 'data/saved_labels.pkl'
 DataFile_test = 'data/saved_test_data.pkl'
@@ -43,7 +46,7 @@ if LoadData is False or not os.path.isfile(DataFile):
         with open(LabelFile_test, "wb") as f:
             pickle.dump(test_labels, f)
 else:
-    if os.path.isfile(DataFile) and os.path.isfile(LabelFile):
+    if os.path.isfile(DataFile) and os.path.isfile(LabelFile) and os.path.isfile(DataFile_test):
         with open(DataFile, "rb") as f:
             training_data = pickle.load(f)
         with open(LabelFile, "rb") as f:
@@ -56,11 +59,9 @@ else:
 X_train, X_val, y_train, y_val = model_selection.train_test_split(training_data, training_labels, train_size=.99, test_size=.01)
 
 
-print("training!")
-#boosting = GradientBoostingClassifier(n_estimators=250, loss='exponential', learning_rate=0.2)
-#boosting = AdaBoostClassifier(RandomForestClassifier(n_estimators=600, max_depth=15, n_jobs=7), n_estimators=25, learning_rate=.1)
-boosting = AdaBoostClassifier(SVC(C=50, gamma=2), n_estimators=25, learning_rate=.1)
-boosting.fit(X_train, y_train[:,1])
+bagging = BaggingClassifier(SVC(C=10, gamma=2), max_samples=0.5, max_features=0.5, n_jobs=7)
+bagging.fit(X_train, y_train[:,1])
+
 
 print("Classifier has a score of %0.4f"
-      % (boosting.score(test_data, test_labels[:,1])))
+      % (bagging.score(test_data, test_labels[:,1])))

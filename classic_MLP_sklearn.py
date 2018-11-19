@@ -1,15 +1,11 @@
-from sklearn.ensemble import GradientBoostingClassifier, AdaBoostClassifier
-from sklearn.neighbors import KNeighborsClassifier
-from sklearn.ensemble import BaggingClassifier
-from sklearn.svm import SVC
-
-import tensorflow as tf
 import numpy as np
+import pandas as pd
 import Data_util
+import matplotlib.pyplot as plt
+import numpy as np
 from sklearn import metrics
-from sklearn.ensemble import RandomForestClassifier
 from sklearn import model_selection
-import time
+from sklearn.neural_network import MLPClassifier
 import os
 import pickle
 
@@ -55,12 +51,11 @@ else:
 
 X_train, X_val, y_train, y_val = model_selection.train_test_split(training_data, training_labels, train_size=.99, test_size=.01)
 
+mlp = MLPClassifier(hidden_layer_sizes=(256,256,128,64), max_iter=30, alpha=1e-4,
+                    solver='adam', verbose=10, tol=1e-4, random_state=1,
+                    learning_rate_init=.01)
 
-print("training!")
-#boosting = GradientBoostingClassifier(n_estimators=250, loss='exponential', learning_rate=0.2)
-#boosting = AdaBoostClassifier(RandomForestClassifier(n_estimators=600, max_depth=15, n_jobs=7), n_estimators=25, learning_rate=.1)
-boosting = AdaBoostClassifier(SVC(C=50, gamma=2), n_estimators=25, learning_rate=.1)
-boosting.fit(X_train, y_train[:,1])
+mlp.fit(X_train, y_train[:,1])
 
 print("Classifier has a score of %0.4f"
-      % (boosting.score(test_data, test_labels[:,1])))
+      % (mlp.score(test_data, test_labels[:,1])))

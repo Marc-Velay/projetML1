@@ -16,6 +16,8 @@ from keras.layers.advanced_activations import LeakyReLU
 from keras.models import Sequential
 from keras.optimizers import Adam
 
+from numpy.random import seed
+seed(5)
 
 experiment_name = 'salary'
 TRAIN = True
@@ -113,7 +115,7 @@ if TRAIN:
     callbacks_list = [checkpoint, histories]
 
     history = MLP.fit(X_train, y_train, validation_data=(X_val, y_val),
-    	epochs=25, class_weight=class_weights, callbacks=callbacks_list, batch_size=16)
+    	epochs=40, class_weight=class_weights, callbacks=callbacks_list, batch_size=16)
 
     plt.figure(1)
     plt.plot(history.history['acc'])
@@ -129,3 +131,8 @@ MLP.load_weights(model_filename)
 predictions = MLP.predict(test_data)
 matrix = metrics.confusion_matrix(test_labels.argmax(axis=1), predictions.argmax(axis=1))
 print(matrix)
+
+score, acc = MLP.evaluate(test_data, test_labels,
+                            batch_size=16)
+print('Test score:', score)
+print('Test accuracy:', acc)
